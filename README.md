@@ -1,14 +1,14 @@
 # IEEE Olympics CTF Competition Writeups
 
-### Description
+## Description
 IEEE Olympics CTF Competition organized and managed by IEEE Mansoura Student Branch & EG CERT
 
 CTF Competition Style: jeopardy
 
 Time: 6 hours
 
-### Challenges
-[1- Web : Inj3ct th!s - 200 points](https://github.com/D4rkTT/IEEE-Olympics-CTF-Writeups#)
+## Challenges
+### [1- Web : Inj3ct th!s - 200 points](https://github.com/D4rkTT/IEEE-Olympics-CTF-Writeups#)
 
 in this challenges we have login form and as challenge name its should be sql injection
 
@@ -47,3 +47,72 @@ so i brueforced it and table columns name is: `id, name, user_name, user_passwor
 
 dumped the database and got username of admin: ``admin`` and his password as plaintext: ``Sup3rS3cretP@ssw0rd``
 back to login form and loggin in and holaaa here is the flag :  ````IEEE{Sch3ma0xa46480_is_Aw3some}````
+
+
+### [2- Web : S3cure uploader - 200 points](https://github.com/D4rkTT/IEEE-Olympics-CTF-Writeups#)
+here we have simple file uploader and we got source code
+```php
+<?php
+if(isset($_GET["upload"])) {
+$target_dir = "uploads/";
+$vars = explode(".", $_FILES["FileToUpload"]["name"]);
+$filename=$vars[0];
+$ext = $vars[1];
+//randomizing file name
+$time = date('Y-m-d H:i:s');
+$new_name = md5(rand(1,1000).$time.$filename."0x4148fo").".".strtolower(pathinfo(basename($_FILES["FileToUpload"]["name"]),PATHINFO_EXTENSION));
+$filename=explode(".", $_FILES["FileToUpload"]["name"])[0];
+$ext = $filename=explode(".", $_FILES["FileToUpload"]["name"])[1];
+$target_file = $target_dir . "$new_name";
+// Check if file already exists
+if (file_exists($target_file)) {
+  echo "File already exists.";
+  $uploadOk = 0;
+  die();
+}
+// Check file size
+if ($_FILES["FileToUpload"]["size"] > 500000) {
+  echo "File is too large.";
+  $uploadOk = 0;
+  die();
+}
+$uploadOk = 1;
+$check = getimagesize($_FILES["FileToUpload"]["tmp_name"]);
+if($check !== false) {
+    $uploadOk = 1;
+} else {
+    echo "File is not an image.";
+    $uploadOk = 0;
+    die();
+  }
+}
+move_uploaded_file($_FILES["FileToUpload"]["tmp_name"], $target_file);
+if(strtolower(pathinfo(basename($_FILES["FileToUpload"]["name"]),PATHINFO_EXTENSION))=="jpg"){
+echo "File uploaded successfully to $target_file";
+}
+else{
+	die("Invalid file type");
+}
+?>
+```
+so after reading and anlysis it i found big serious problem, the script check file extension after moving it to uploading folder LOL but server reset every 10 mins so we have only 10 mins xD
+
+also if i uploaded anything except jpg it won't give me the file name so i must get file name manually
+
+but SAD the file name is md5 hash of random number + date + filename without ext + custom string WTF !!
+
+but wait random number from 1 to 1000 only so its easy to brueforce it
+
+and we can get date from response headers xD
+
+and we got file name of course and custom string
+
+but wait it check image uploaded with `getimagesize` function but its easy to bypass by injecting php payload into image exif data by ``exiftool -Comment='<?php  system($_GET['cmd']); ?>' test.jpg``
+
+also script check file size so we should injecte payload into small image, my image size after injecting php code inside it was 677 bytes :D
+
+thne change image name to `anything.php` then upload it and get date from response and edit my php script with it then run my script
+so now we have 1000 filename as md5 hash
+so back to burp intruder and paste my list on payload list and start attack and holaaaa we got web shell uploaded :D
+and now we can get flag inside flag.php file :D
+
