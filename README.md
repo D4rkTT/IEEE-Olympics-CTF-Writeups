@@ -8,7 +8,7 @@ CTF Competition Style: jeopardy
 Time: 6 hours
 
 ### Challenges
-[1- Web : Inj3ct th!s - 200 points]()
+[1- Web : Inj3ct th!s - 200 points](https://github.com/D4rkTT/IEEE-Olympics-CTF-Writeups#)
 
 in this challenges we have login form and as challenge name its should be sql injection
 
