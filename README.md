@@ -2,7 +2,9 @@
 
 ### Description
 IEEE Olympics CTF Competition organized and managed by IEEE Mansoura Student Branch & EG CERT
+
 CTF Competition Style: jeopardy
+
 Time: 6 hours
 
 ### Challenges
