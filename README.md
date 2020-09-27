@@ -95,7 +95,8 @@ else{
 }
 ?>
 ```
-so after reading and anlysis it i found big serious problem, the script check file extension after moving it to uploading folder LOL but server reset every 10 mins so we have only 10 mins xD
+so after reading and analyse it i found big serious problem, the script check file extension after moving uploaded file to uploading folder LOL xD
+but server reset every 10 mins so we have only 10 mins xD
 
 also if i uploaded anything except jpg it won't give me the file name so i must get file name manually
 
