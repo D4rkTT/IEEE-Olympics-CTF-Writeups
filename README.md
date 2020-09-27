@@ -110,10 +110,10 @@ and we got file name of course and custom string
 
 but wait it check image uploaded with `getimagesize` function but its easy to bypass by injecting php payload into image exif data by ``exiftool -Comment='<?php  system($_GET['cmd']); ?>' test.jpg``
 
-also script check file size so we should injecte payload into small image, my image size after injecting php code inside it was 677 bytes :D
+also script check file size so we should inject php payload into small image, my image size after injecting php code inside it was 677 bytes :D
 
-thne change image name to `anything.php` then upload it and get date from response and edit my php script with it then run my script
-so now we have 1000 filename as md5 hash
-so back to burp intruder and paste my list on payload list and start attack and holaaaa we got web shell uploaded :D
+then change image name to `anything.php` then upload it and get date from response and edit my php script (was have no time to write it with python or any lanuage else xD) with it then run my script
+so now we have 1000 filenames as md5 hash
+so back to burp intruder and paste my list on payload list and start attack and wait 200 response code and holaaaa we got web shell uploaded :D
 and now we can get flag inside flag.php file :D
 
