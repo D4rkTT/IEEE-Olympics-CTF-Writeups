@@ -6,7 +6,7 @@ $proxy = 'http://127.0.0.1:8080';
 curl_setopt($handle, CURLOPT_URL, $url);
 
 curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($handle, CURLOPT_PROXY, $proxy);
+#curl_setopt($handle, CURLOPT_PROXY, $proxy);
 curl_setopt($handle, CURLOPT_COOKIE, 'PHPSESSID=ufcrbmg1ckodev6n7gktomdnvv');
 curl_setopt($handle, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0");
 $output = curl_exec($handle);
