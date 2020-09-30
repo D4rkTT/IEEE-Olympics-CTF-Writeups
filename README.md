@@ -174,10 +174,10 @@ after some analysis i found that script check for php input with regex exp.
 
 so if input have and text between `$kh` and `$kf` ("7ef9bf383ded" and "b241e2ed9d4a") then script will extract this string then decode it as base64 then pass it to `x function` to decrypt it then gzuncompress it then pass the result to `eval` function :D
 
-then get the result then gzcompress it then decrypt it with `x function` then encode the result as base64 then print it in response between `$p` & `$kh` and `$kf`
+then get the result then gzcompress it then encrypt it with `x function` then encode the result as base64 then print it in response between `$p` & `$kh` and `$kf`
 so i wrote simple php script to do all this sh!t xD
 
-my script get payload from GET input and encrypt it using
+my script encrypt the payload using
 ```php
 $cmd_encoded = base64_encode(x(gzcompress($_GET['payload']),$k));
 ```
@@ -192,3 +192,5 @@ then print the result after filtering it from `$kf` & `$kh` and `$p` values
 
 now let's try this payload : `system("ls");`
 and holaaaa we have RCE now and u can read the flag in `s3cret_flag.php` file :D
+
+Update: i added terminal style to the script, so now u can run it on ur localhost server and happy terminal :D ♥
